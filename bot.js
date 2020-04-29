@@ -99,6 +99,7 @@ function Play(cmd, user, channelID)
         twelve.push(user);
                 
         cmd = '12:00PM';
+        SendMessage(user + ' booked in for ' + cmd, channelID); 
     }
     else if (cmd === '5' || cmd === '5:00')
     {
@@ -107,6 +108,7 @@ function Play(cmd, user, channelID)
         five.push(user);
                 
         cmd = '5:00PM';
+        SendMessage(user + ' booked in for ' + cmd, channelID); 
     }
     else if (cmd === '7:30')
     {
@@ -115,6 +117,7 @@ function Play(cmd, user, channelID)
         seven.push(user);
                 
         cmd = '7:30PM';
+        SendMessage(user + ' booked in for ' + cmd, channelID); 
     }
     else if (cmd === 'all') // books user in for all 3 timeslots
     {
@@ -127,13 +130,9 @@ function Play(cmd, user, channelID)
         if (!seven.includes(user))
             seven.push(user);
                 
-                cmd = 'the whole day'; // change so bot message looks complete
-    }
-            
-    bot.sendMessage({
-        to: channelID,
-        message: user + ' booked in for ' + cmd
-    });
+        cmd = 'the whole day'; // change so bot message looks complete
+        SendMessage(user + ' booked in for ' + cmd, channelID); 
+    }     
 }
 
 function Booked(channelID)
@@ -154,12 +153,10 @@ function Booked(channelID)
     if (seven.length !== 0)
     {    
         msg += '\n7:30PM Bookings: ';
-        msg += five.join(', ');
+        msg += seven.join(', ');
     }
-    bot.sendMessage({
-        to: channelID,
-        message: msg
-    });
+    
+    SendMessage(msg, channelID);
 }
 
 function Busy(cmd, user, channelID)
@@ -175,6 +172,7 @@ function Busy(cmd, user, channelID)
         
         twelve.splice(twelve.indexOf(user), 1);
         cmd = '12:00PM';
+        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
     }
     else if (cmd === '5' || cmd === '5:00')
     {
@@ -183,6 +181,7 @@ function Busy(cmd, user, channelID)
         
         five.splice(five.indexOf(user), 1);
         cmd = '5:00PM';
+        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
     }
     else if (cmd === '7:30')
     {
@@ -191,6 +190,7 @@ function Busy(cmd, user, channelID)
         
         seven.splice(seven.indexOf(user), 1);
         cmd = '7:30PM';
+        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
     }
     else if (cmd === 'all') // removes user from all 3 timeslots
     {
@@ -204,9 +204,14 @@ function Busy(cmd, user, channelID)
             seven.splice(seven.indexOf(user), 1);
                 
         cmd = 'all day'; // change so bot message looks complete
+        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
     }
+}
+
+function SendMessage(msg, channelID)
+{
     bot.sendMessage({
         to: channelID,
-        message: user + ' was removed from their ' + cmd + ' booking'
+        message: msg
     });
 }

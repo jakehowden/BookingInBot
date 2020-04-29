@@ -1,0 +1,11 @@
+{
+ "name": "booking-in-bot",
+ "version": "1.0.0",
+ "description": "Users can book in for gaming sessions",
+ "main": "bot.js",
+ "author": "Jake Howden",
+ "dependencies": {
+  "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+  "winston": "^3.2.1"
+ }
+}

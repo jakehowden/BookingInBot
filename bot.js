@@ -1,9 +1,11 @@
-var Discord = require('discord.io');
+var Discord = require('discord.js');
 var logger = require('winston');
 var auth = require('./auth.json');
+var version = "v1.1.0";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot
+var authed_users = ["Snak 3", "Adam_Giambrone"];
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -12,58 +14,52 @@ logger.add(new logger.transports.Console, {
 });
 logger.level = 'debug';
 // Initialize Discord Bot
-var bot = new Discord.Client({
-   token: auth.token,
-   autorun: true
+var bot = new Discord.Client();
+
+bot.on('ready', () => {
+  console.log('Connected');
 });
-bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
-});
-bot.on('message', function (user, userID, channelID, message, evt) {
-    // The bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
-    
-    if (message.substring(0, 1) === '!') {
-        var cmd = message.replace('!', '');
+
+bot.on('message', message => {
+  
+  if (message.content.substring(0, 1) === '!') {
+        var cmd = message.content.replace('!', '');
         
         if (cmd.includes('version'))
         {
-            Version(channelID);
+            Version(message);
         }
         else if (cmd.includes('commands'))
         {
-            Commands(channelID);
+            Commands(message);
         }
         else if(cmd.includes('play')) // user is booking in
         {
-            Play(cmd, user, channelID);
+            Play(cmd, message);
         }
         else if(cmd.includes('booked')) // user is checking the current bookings
         {
-           Booked(channelID); 
+           Booked(message); 
         }
         else if(cmd.includes('busy'))
         {
-           Busy(cmd, user, channelID) ;
+           Busy(cmd, message) ;
         }
         else if (cmd.includes('reset'))
         {
-           Reset();
+           Reset(message);
         }
-     }
+  }
 });
 
-function Version(channelID)
+bot.login(auth.token);
+
+function Version(message)
 {
-    bot.sendMessage({
-        to: channelID,
-        message: 'Version 1.0.0'
-    });
+    message.channel.send(version);
 }
 
-function Commands(channelID)
+function Commands(message)
 {
     msg = 'Commands:';
     msg += '\n!play - Book in for a gaming session, i.e. !play 7:30';
@@ -72,25 +68,26 @@ function Commands(channelID)
     msg += '\n!reset - Clears all current bookings';
     msg += '\n Available times are 12:00, 5:00, 7:30 and all (all books into all three times)';
     
-    bot.sendMessage({
-        to: channelID,
-        message: msg
-    });
+    message.channel.send(msg);
 }
 
-function Reset()
+function Reset(message)
 {
+    if(!authed_users.includes(message.member.user.username))
+        return;
+    
     twelve = [];
     five = [];
     seven = [];
 }
 
-function Play(cmd, user, channelID) 
+function Play(cmd, message) 
 {
     if (cmd === 'play' || cmd === 'play ') // no time
         return;
     
     cmd = cmd.replace('play ', '');
+    var user = message.member.user.username;
             
     if (cmd === '12' || cmd === '12:00')
     {
@@ -99,7 +96,7 @@ function Play(cmd, user, channelID)
         twelve.push(user);
                 
         cmd = '12:00PM';
-        SendMessage(user + ' booked in for ' + cmd, channelID); 
+        message.channel.send(user + ' booked in for ' + cmd); 
     }
     else if (cmd === '5' || cmd === '5:00')
     {
@@ -108,7 +105,7 @@ function Play(cmd, user, channelID)
         five.push(user);
                 
         cmd = '5:00PM';
-        SendMessage(user + ' booked in for ' + cmd, channelID); 
+        message.channel.send(user + ' booked in for ' + cmd); 
     }
     else if (cmd === '7:30')
     {
@@ -117,7 +114,7 @@ function Play(cmd, user, channelID)
         seven.push(user);
                 
         cmd = '7:30PM';
-        SendMessage(user + ' booked in for ' + cmd, channelID); 
+        message.channel.send(user + ' booked in for ' + cmd); 
     }
     else if (cmd === 'all') // books user in for all 3 timeslots
     {
@@ -131,11 +128,11 @@ function Play(cmd, user, channelID)
             seven.push(user);
                 
         cmd = 'the whole day'; // change so bot message looks complete
-        SendMessage(user + ' booked in for ' + cmd, channelID); 
+        message.channel.send(user + ' booked in for ' + cmd); 
     }     
 }
 
-function Booked(channelID)
+function Booked(message)
 {
     var msg = ''; // Will hold all the user currently booked in
             
@@ -156,14 +153,17 @@ function Booked(channelID)
         msg += seven.join(', ');
     }
     
-    SendMessage(msg, channelID);
+    if(msg !== '')
+        message.channel.send(msg);
 }
 
-function Busy(cmd, user, channelID)
+function Busy(cmd, message)
 {
     if (cmd === 'busy' || cmd === 'busy ') // no time
         return;
+    
     cmd = cmd.replace('busy ', '');
+    var user = message.member.user.username;
             
     if (cmd === '12' || cmd === '12:00')
     {
@@ -172,7 +172,7 @@ function Busy(cmd, user, channelID)
         
         twelve.splice(twelve.indexOf(user), 1);
         cmd = '12:00PM';
-        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
+        message.channel.send(user + ' was removed from their ' + cmd + ' booking');
     }
     else if (cmd === '5' || cmd === '5:00')
     {
@@ -181,7 +181,7 @@ function Busy(cmd, user, channelID)
         
         five.splice(five.indexOf(user), 1);
         cmd = '5:00PM';
-        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
+        message.channel.send(user + ' was removed from their ' + cmd + ' booking');
     }
     else if (cmd === '7:30')
     {
@@ -190,7 +190,7 @@ function Busy(cmd, user, channelID)
         
         seven.splice(seven.indexOf(user), 1);
         cmd = '7:30PM';
-        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
+        message.channel.send(user + ' was removed from their ' + cmd + ' booking');
     }
     else if (cmd === 'all') // removes user from all 3 timeslots
     {
@@ -204,14 +204,6 @@ function Busy(cmd, user, channelID)
             seven.splice(seven.indexOf(user), 1);
                 
         cmd = 'all day'; // change so bot message looks complete
-        SendMessage(user + ' was removed from their ' + cmd + ' booking', channelID);
+        message.channel.send(user + ' was removed from their ' + cmd + ' booking');
     }
-}
-
-function SendMessage(msg, channelID)
-{
-    bot.sendMessage({
-        to: channelID,
-        message: msg
-    });
 }

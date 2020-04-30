@@ -1,0 +1,4 @@
+env/*
+!env/*-dist.json
+!env/config.json
+node_modules/

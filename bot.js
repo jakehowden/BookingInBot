@@ -5,7 +5,7 @@ var version = "v1.1.0";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot
-var authed_users = ["Snak 3", "Adam_Giambrone"];
+var authed_users = ["Jake", "Adam"];
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -21,33 +21,35 @@ bot.on('ready', () => {
 });
 
 bot.on('message', message => {
-  
   if (message.content.substring(0, 1) === '!') {
         var cmd = message.content.replace('!', '');
         
-        if (cmd.includes('version'))
-        {
-            Version(message);
-        }
-        else if (cmd.includes('commands'))
-        {
-            Commands(message);
-        }
-        else if(cmd.includes('play')) // user is booking in
+        // Cannot include this in the switch as 
+        // they have more information than just the command
+        if(cmd.includes('play'))
         {
             Play(cmd, message);
         }
-        else if(cmd.includes('booked')) // user is checking the current bookings
-        {
-           Booked(message); 
-        }
         else if(cmd.includes('busy'))
         {
-           Busy(cmd, message) ;
+           Busy(cmd, message);
         }
-        else if (cmd.includes('reset'))
+        
+        // user is not booking in or backing out of a booking
+        switch(cmd)
         {
-           Reset(message);
+            case 'version':
+                Version(message);
+                break;
+            case 'commands':
+                Commands(message);
+                break;
+            case 'booked':
+                Booked(message);
+                break;
+            case 'reset':
+                Reset(message);
+                break;
         }
   }
 });
@@ -73,7 +75,7 @@ function Commands(message)
 
 function Reset(message)
 {
-    if(!authed_users.includes(message.member.user.username))
+    if(!authed_users.includes(message.member.displayName))
         return;
     
     twelve = [];
@@ -87,7 +89,7 @@ function Play(cmd, message)
         return;
     
     cmd = cmd.replace('play ', '');
-    var user = message.member.user.username;
+    var user = message.member.displayName;
             
     if (cmd === '12' || cmd === '12:00')
     {
@@ -163,7 +165,7 @@ function Busy(cmd, message)
         return;
     
     cmd = cmd.replace('busy ', '');
-    var user = message.member.user.username;
+    var user = message.member.displayName;
             
     if (cmd === '12' || cmd === '12:00')
     {

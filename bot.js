@@ -1,5 +1,4 @@
 var Discord = require('discord.js');
-var logger = require('winston');
 var auth = require('./auth.json');
 var version = "v1.1.0";
 var seven = []; // 7:30PM slot
@@ -7,12 +6,6 @@ var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot
 var authed_users = ["Jake", "Adam"];
 
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
-});
-logger.level = 'debug';
 // Initialize Discord Bot
 var bot = new Discord.Client();
 

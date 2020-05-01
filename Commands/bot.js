@@ -28,8 +28,6 @@ bot.on('message', message => {
             booking_date = today;
         }
         
-        // Cannot include this in the switch as 
-        // they have more information than just the command
         if(cmd.includes('play'))
         {
             Play(cmd, message);
@@ -38,26 +36,25 @@ bot.on('message', message => {
         {
            Busy(cmd, message);
         }
-        
-        // user is not booking in or backing out of a booking
-        switch(cmd)
+        else if(cmd.includes('version'))
         {
-            case 'version':
-                Version(message);
-                break;
-            case 'commands':
-                Commands(message);
-                break;
-            case 'booked':
-                Booked(message);
-                break;
-            case 'reset':
-                var usr = message.member.user;
-                if(!authed_users.includes(usr.username + '#' + usr.discriminator))
-                    message.channel.send(message.member.displayName + ', you are not authorised to use that command, fuck off.'); 
-                    break;
+           Version(message);
+        }
+        else if(cmd.includes('commands'))
+        {
+           Commands(message);
+        }
+        else if(cmd.includes('booked'))
+        {
+           Booked(message);
+        }
+        else if(cmd.includes('reset'))
+        {
+           var usr = message.member.user;
+            if(!authed_users.includes(usr.username + '#' + usr.discriminator))
+                message.channel.send(message.member.displayName + ', you are not authorised to use that command, fuck off.'); 
+            else
                 Reset();
-                break;
         }
   }
 });
@@ -142,7 +139,7 @@ function Play(cmd, message)
 function Booked(message)
 {
     var msg = ''; // Will hold all the user currently booked in
-            
+    //
     // check which times have been booked into
     if (twelve.length !== 0)
     {
@@ -160,8 +157,10 @@ function Booked(message)
         msg += seven.join(', ');
     }
     
-    if(msg !== '')
-        message.channel.send(msg);
+    if(msg === '')
+        msg = 'Currently, there are no bookings for today'
+        
+    message.channel.send(msg);
 }
 
 function Busy(cmd, message)

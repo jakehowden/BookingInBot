@@ -1,5 +1,7 @@
 env/*
 !env/*-dist.json
 !env/config.json
+sql/*
+!env/createdatabase-dist.js
 node_modules/
 nbproject/

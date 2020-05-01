@@ -1,10 +1,11 @@
 var Discord = require('discord.js');
-var auth = require('./auth.json');
+var auth = require('../env/discord.json');
 var version = "v1.1.0";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot
-var authed_users = ["Jake", "Adam"];
+var authed_users = ["Snak 3#7036"];
+var booking_date = '';
 
 // Initialize Discord Bot
 var bot = new Discord.Client();
@@ -16,6 +17,15 @@ bot.on('ready', () => {
 bot.on('message', message => {
   if (message.content.substring(0, 1) === '!') {
         var cmd = message.content.replace('!', '');
+        
+        var date = new Date();
+        var today = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+        
+        if (booking_date === '' || booking_date < today)
+        {
+            Reset();
+            booking_date = today;
+        }
         
         // Cannot include this in the switch as 
         // they have more information than just the command
@@ -60,7 +70,7 @@ function Commands(message)
     msg += '\n!play - Book in for a gaming session, i.e. !play 7:30';
     msg += '\n!busy - Unbook from a gaming session, i.e. !busy 7:30';
     msg += '\n!booked - Check who is booked in for the day';
-    msg += '\n!reset - Clears all current bookings';
+    msg += '\n!reset - Clears all current bookings, only for use by ' + authed_users.join(', ');
     msg += '\n Available times are 12:00, 5:00, 7:30 and all (all books into all three times)';
     
     message.channel.send(msg);
@@ -68,7 +78,7 @@ function Commands(message)
 
 function Reset(message)
 {
-    if(!authed_users.includes(message.member.displayName))
+    if(!authed_users.includes(message.member.user.username))
         return;
     
     twelve = [];

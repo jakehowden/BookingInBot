@@ -47,7 +47,14 @@ bot.on('message', message => {
             if(!authed_users.includes(usr.username + '#' + usr.discriminator))
                 message.channel.send(message.member.displayName + ', you are not authorised to use that command.'); 
             else
+            {
                 Reset();
+                message.delete();
+            }
+        }
+        else if(cmd.includes('ask'))
+        {
+           Ask(message, cmd);
         }
         else if(cmd.includes('version'))
         {
@@ -95,6 +102,15 @@ function Commands(message)
     message.channel.send(msg);
 }
 
+function Ask(message, cmd)
+{
+    message.delete();
+    var user = message.member.displayName;
+    message.channel.send(user + ' asks: ' + cmd)
+            .then(m => m.react(':thumbsup:'))
+            .then(m => m.react(':thumbsdown:'));
+}
+
 function Reset()
 {
     ten = [];
@@ -105,6 +121,7 @@ function Reset()
 
 function Play(cmd, message) 
 {
+    message.delete();
     if (cmd === 'play' || cmd === 'play ') // no time
         return;
     
@@ -168,6 +185,7 @@ function Play(cmd, message)
 
 function Booked(message)
 {
+    message.delete();
     var msg = ''; // Will hold all the user currently booked in
     
     // check which times have been booked into
@@ -200,6 +218,7 @@ function Booked(message)
 
 function Busy(cmd, message)
 {
+    message.delete();
     if (cmd === 'busy' || cmd === 'busy ') // no time
         return;
     

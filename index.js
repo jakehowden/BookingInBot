@@ -76,7 +76,7 @@ function PatchNotes(message)
     msg = 'Patch notes (' + version + '):';
     msg += '\n  - Added !patchnotes command, prints patch notes for current bot version';
     msg += '\n  - Added 10:00AM booking slot';
-    msg += '\n  - Bug fixes';
+    msg += '\n  - Bug fixes, rework of resetting bookings in a new day';
     
     message.channel.send(msg);
 }

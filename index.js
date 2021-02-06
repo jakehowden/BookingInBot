@@ -1,6 +1,6 @@
 var Discord = require('discord.js');
 var auth = require('./env/discord.json');
-var version = "v1.2.1";
+var version = "v1.3.0";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot

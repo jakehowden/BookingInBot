@@ -1,5 +1,5 @@
 var Discord = require('discord.js');
-var auth = require('../env/discord.json');
+var auth = require('./env/discord.json');
 var version = "v1.2.1";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
@@ -53,7 +53,7 @@ bot.on('message', message => {
         {
            Version(message);
         }
-        else if(cmd.includes('commands'))
+        else if(cmd.includes('help'))
         {
            Commands(message);
         }
@@ -76,6 +76,7 @@ function PatchNotes(message)
     msg = 'Patch notes (' + version + '):';
     msg += '\n  - Added !patchnotes command, prints patch notes for current bot version';
     msg += '\n  - Added 10:00AM booking slot';
+    msg += '\n  - Renamed !commands to !help';
     msg += '\n  - Bug fixes, rework of resetting bookings in a new day';
     
     message.channel.send(msg);
@@ -88,7 +89,7 @@ function Commands(message)
     msg += '\n!busy - Unbook from a gaming session, i.e. !busy 7:30';
     msg += '\n!booked - Check who is booked in for the day';
     msg += '\n!reset - Clears all current bookings, only for use by ' + authed_users.join(', ');
-    msg += '\n Available times are 10:00, 12:00, 5:00, 7:30 and all (all books into all four times)';
+    msg += '\n Available times are 10:00AM, 12:00PM, 5:00PM, 7:30PM and all (all books into all four times)';
     msg += '\n!patchnotes - Check the patch notes for the current bot version';
     
     message.channel.send(msg);
@@ -172,7 +173,7 @@ function Booked(message)
     // check which times have been booked into
     if (ten.length !== 0)
     {
-        msg += '\n10:00PM Bookings: ';
+        msg += '\n10:00AM Bookings: ';
         msg += ten.join(', ');
     }
     if (twelve.length !== 0)
@@ -211,7 +212,7 @@ function Busy(cmd, message)
             return;
         
         ten.splice(ten.indexOf(user), 1);
-        cmd = '10:00PM';
+        cmd = '10:00AM';
         message.channel.send(user + ' was removed from their ' + cmd + ' booking');
     }
     else if (cmd === '12' || cmd === '12:00')

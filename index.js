@@ -31,7 +31,7 @@ bot.on('message', message => {
         
         if(cmd.includes('play'))
         {
-            Play(cmd, message);
+           Play(cmd, message);
         }
         else if(cmd.includes('booked'))
         {
@@ -44,13 +44,14 @@ bot.on('message', message => {
         else if(cmd.includes('reset'))
         {
            var usr = message.member.user;
-            if(!authed_users.includes(usr.username + '#' + usr.discriminator))
-                message.channel.send(message.member.displayName + ', you are not authorised to use that command.'); 
-            else
-            {
-                Reset();
-                message.delete();
-            }
+           if(!authed_users.includes(usr.username + '#' + usr.discriminator))
+           {
+               message.channel.send(message.member.displayName + ', you are not authorised to use that command.');
+           } 
+           else
+           {
+               Reset(message);
+           }
         }
         else if(cmd.includes('ask'))
         {
@@ -81,10 +82,8 @@ function Version(message)
 function PatchNotes(message)
 {
     msg = 'Patch notes (' + version + '):';
-    msg += '\n  - Added !patchnotes command, prints patch notes for current bot version';
-    msg += '\n  - Added 10:00AM booking slot';
-    msg += '\n  - Renamed !commands to !help';
-    msg += '\n  - Bug fixes, rework of resetting bookings in a new day';
+    msg += '\n  - Added !ask command. Prints a poll, respond to the poll via the reaction emojis';
+    msg += '\n  - !play, !busy, !booked, !reset and !ask messages are deleted on response.';
     
     message.channel.send(msg);
 }
@@ -96,7 +95,7 @@ function Commands(message)
     msg += '\n!busy - Unbook from a gaming session, i.e. !busy 7:30';
     msg += '\n!booked - Check who is booked in for the day';
     msg += '\n!reset - Clears all current bookings, only for use by ' + authed_users.join(', ');
-    msg += '\n Available times are 10:00AM, 12:00PM, 5:00PM, 7:30PM and all (all books into all four times)';
+    msg += '\nAvailable times are 10:00AM, 12:00PM, 5:00PM, 7:30PM and all (all books into all four times)';
     msg += '\n!patchnotes - Check the patch notes for the current bot version';
     
     message.channel.send(msg);
@@ -111,12 +110,13 @@ function Ask(message, cmd)
             .then(m => m.react(':thumbsdown:'));
 }
 
-function Reset()
+function Reset(message)
 {
     ten = [];
     twelve = [];
     five = [];
     seven = [];
+    message.delete();
 }
 
 function Play(cmd, message) 

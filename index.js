@@ -1,4 +1,7 @@
 var Discord = require('discord.js');
+var ask = require('./commands/ask.js');
+var commands = require('./commands/commands.js');
+var patch_notes = require('./commands/patch_notes.js');
 var auth = require('./env/discord.json');
 var version = "v1.3.0";
 var seven = []; // 7:30PM slot
@@ -55,60 +58,24 @@ bot.on('message', message => {
         }
         else if(cmd.includes('ask'))
         {
-           Ask(message, cmd);
+           ask.Run(message, cmd);
         }
         else if(cmd.includes('version'))
         {
-           Version(message);
+           message.channel.send(version);
         }
         else if(cmd.includes('help'))
         {
-           Commands(message);
+           commands.Run(message);
         }
         else if(cmd.includes('patchnotes'))
         {
-           PatchNotes(message);
+           patch_notes.Run(message);
         }
   }
 });
 
 bot.login(auth.token);
-
-function Version(message)
-{
-    message.channel.send(version);
-}
-
-function PatchNotes(message)
-{
-    msg = 'Patch notes (' + version + '):';
-    msg += '\n  - Added !ask command. Prints a poll, respond to the poll via the reaction emojis';
-    msg += '\n  - !play, !busy, !booked, !reset and !ask messages are deleted on response.';
-    
-    message.channel.send(msg);
-}
-
-function Commands(message)
-{
-    msg = 'Commands:';
-    msg += '\n!play - Book in for a gaming session, i.e. !play 7:30';
-    msg += '\n!busy - Unbook from a gaming session, i.e. !busy 7:30';
-    msg += '\n!booked - Check who is booked in for the day';
-    msg += '\n!reset - Clears all current bookings, only for use by ' + authed_users.join(', ');
-    msg += '\nAvailable times are 10:00AM, 12:00PM, 5:00PM, 7:30PM and all (all books into all four times)';
-    msg += '\n!patchnotes - Check the patch notes for the current bot version';
-    
-    message.channel.send(msg);
-}
-
-function Ask(message, cmd)
-{
-    message.delete();
-    var user = message.member.displayName;
-    message.channel.send(user + ' asks: ' + cmd)
-            .then(m => m.react(':thumbsup:'))
-            .then(m => m.react(':thumbsdown:'));
-}
 
 function Reset(message)
 {

@@ -54,11 +54,11 @@ bot.on('message', message => {
            else
            {
                Reset(message);
+               message.delete();
            }
         }
         else if(cmd.includes('ask'))
         {
-           cmd.replace('ask ', '');
            ask.Run(message, cmd);
         }
         else if(cmd.includes('version'))
@@ -67,7 +67,7 @@ bot.on('message', message => {
         }
         else if(cmd.includes('help'))
         {
-           commands.Run(message);
+           commands.Run(message, authed_users);
         }
         else if(cmd.includes('patchnotes'))
         {
@@ -78,9 +78,8 @@ bot.on('message', message => {
 
 bot.login(auth.token);
 
-function Reset(message)
+function Reset()
 {
-    message.delete();
     ten = [];
     twelve = [];
     five = [];

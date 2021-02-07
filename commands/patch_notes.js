@@ -1,4 +1,4 @@
-function Run(message)
+function Run(message, version)
 {
     msg = 'Patch notes (' + version + '):';
     msg += '\n  - Added !ask command. Prints a poll, respond to the poll via the reaction emojis';

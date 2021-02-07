@@ -28,6 +28,7 @@ bot.on('message', message => {
             Reset();
             booking_date = today;
         }
+        //var server = message.guild.id;
         
         if(cmd.includes('play'))
         {

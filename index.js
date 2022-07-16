@@ -1,6 +1,9 @@
 var Discord = require('discord.js');
+var ask = require('./commands/ask.js');
+var commands = require('./commands/commands.js');
+var patch_notes = require('./commands/patch_notes.js');
 var auth = require('./env/discord.json');
-var version = "v1.2.1";
+var version = "v1.3.0";
 var seven = []; // 7:30PM slot
 var five = []; // 5:00PM slot
 var twelve = []; // 12:00PM slot
@@ -32,7 +35,7 @@ bot.on('message', message => {
         
         if(cmd.includes('play'))
         {
-            Play(cmd, message);
+           Play(cmd, message);
         }
         else if(cmd.includes('booked'))
         {
@@ -45,56 +48,36 @@ bot.on('message', message => {
         else if(cmd.includes('reset'))
         {
            var usr = message.member.user;
-            if(!authed_users.includes(usr.username + '#' + usr.discriminator))
-                message.channel.send(message.member.displayName + ', you are not authorised to use that command.'); 
-            else
-                Reset();
+           if(!authed_users.includes(usr.username + '#' + usr.discriminator))
+           {
+               message.channel.send(message.member.displayName + ', you are not authorised to use that command.');
+           } 
+           else
+           {
+               Reset(message);
+               message.delete();
+           }
+        }
+        else if(cmd.includes('ask'))
+        {
+           ask.Run(message, cmd);
         }
         else if(cmd.includes('version'))
         {
-           Version(message);
+           message.channel.send(version);
         }
         else if(cmd.includes('help'))
         {
-           Commands(message);
+           commands.Run(message, authed_users);
         }
         else if(cmd.includes('patchnotes'))
         {
-           PatchNotes(message);
+           patch_notes.Run(message, version);
         }
   }
 });
 
 bot.login(auth.token);
-
-function Version(message)
-{
-    message.channel.send(version);
-}
-
-function PatchNotes(message)
-{
-    msg = 'Patch notes (' + version + '):';
-    msg += '\n  - Added !patchnotes command, prints patch notes for current bot version';
-    msg += '\n  - Added 10:00AM booking slot';
-    msg += '\n  - Renamed !commands to !help';
-    msg += '\n  - Bug fixes, rework of resetting bookings in a new day';
-    
-    message.channel.send(msg);
-}
-
-function Commands(message)
-{
-    msg = 'Commands:';
-    msg += '\n!play - Book in for a gaming session, i.e. !play 7:30';
-    msg += '\n!busy - Unbook from a gaming session, i.e. !busy 7:30';
-    msg += '\n!booked - Check who is booked in for the day';
-    msg += '\n!reset - Clears all current bookings, only for use by ' + authed_users.join(', ');
-    msg += '\n Available times are 10:00AM, 12:00PM, 5:00PM, 7:30PM and all (all books into all four times)';
-    msg += '\n!patchnotes - Check the patch notes for the current bot version';
-    
-    message.channel.send(msg);
-}
 
 function Reset()
 {
@@ -106,6 +89,7 @@ function Reset()
 
 function Play(cmd, message) 
 {
+    message.delete();
     if (cmd === 'play' || cmd === 'play ') // no time
         return;
     
@@ -169,6 +153,7 @@ function Play(cmd, message)
 
 function Booked(message)
 {
+    message.delete();
     var msg = ''; // Will hold all the user currently booked in
     
     // check which times have been booked into
@@ -201,6 +186,7 @@ function Booked(message)
 
 function Busy(cmd, message)
 {
+    message.delete();
     if (cmd === 'busy' || cmd === 'busy ') // no time
         return;
     

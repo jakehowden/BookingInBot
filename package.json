@@ -1,13 +1,8 @@
 {
- "name": "booking-in-bot",
- "version": "1.0.0",
- "description": "Users can book in for gaming sessions",
- "main": "bot.js",
- "author": "Jake Howden",
- "dependencies": {
-  "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
-  "discord.js": "^12.5.1",
-  "mysql": "github:mysqljs/mysql",
-  "winston": "^3.2.1"
- }
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "discord.js": "^14.0.3"
+  }
 }

@@ -16,7 +16,7 @@ bot.on('ready', () => {
 
 bot.on('message', message => {
 
-    let cmd : string = message.content.replace('!', '');
+    let cmd: string = message.content.replace('!', '');
     let server = message.guild.id;
     let user = message.member.user.username + '#' + message.member.user.discriminator;
     

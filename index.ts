@@ -1,6 +1,8 @@
-import { BookUser } from "./Commands/Play";
+import { Play } from "./Commands/Play";
+import { Patchnotes } from "./Commands/Patchnotes";
+import { Help } from "./Commands/Help";
 import { Client, ClientOptions } from "discord.js";
-import auth from './Env/discord.json';
+import env from './Env/env.json';
 
 // Init Discord Bot
 const options: ClientOptions = {
@@ -9,7 +11,7 @@ const options: ClientOptions = {
 const bot = new Client(options);
 
 // Login to Discord
-bot.login(auth.token);
+bot.login(env.discord_token);
 
 bot.on('ready', () => {
     console.log('Connected - ready for commands');
@@ -22,35 +24,31 @@ bot.on('message', async message => {
     switch(true)
     {
         case cmd.includes('play'): {
-            await BookUser(message, cmd);
+            await Play(message, cmd);
             break;
         }
-        
         case cmd.includes('same'): {
             break;
         }
-        
         case cmd.includes('busy'): {
             break;
         }
-        
         case cmd.includes('booked'): {
             break;
         }
-        
         case cmd.includes('ask'): {
             break;
         }
-        
         case cmd.includes('help'): {
+            Help(message);
             break;
         }
-        
         case cmd.includes('patchnotes'): {
+            Patchnotes(message, env.version);
             break;
         }
-        
         case cmd.includes('version'): {
+            message.channel.send(env.version);
             break;
         }
     };

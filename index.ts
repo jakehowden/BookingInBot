@@ -1,3 +1,4 @@
+import { BookUser } from "./Commands/Play";
 import { Client, ClientOptions } from "discord.js";
 import auth from './Env/discord.json';
 
@@ -14,15 +15,14 @@ bot.on('ready', () => {
     console.log('Connected - ready for commands');
 });
 
-bot.on('message', message => {
+bot.on('message', async message => {
 
     let cmd: string = message.content.replace('!', '');
-    let server = message.guild.id;
-    let user = message.member.user.username + '#' + message.member.user.discriminator;
     
     switch(true)
     {
         case cmd.includes('play'): {
+            await BookUser(message, cmd);
             break;
         }
         

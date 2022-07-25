@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { GetDateFromArgs, GetFullDateFromDate, Get24HourTimeFromDate } from '../Helpers/dateTime';
+import { GetDateFromArgs, GetFullDateFromDate, Get24HourTimeFromDate } from '../Helpers/DateManipulation';
 import { Execute } from '../Database/db';
 
 export const Play = async (message: Message, args: string) => {
@@ -21,7 +21,7 @@ export const Play = async (message: Message, args: string) => {
 //      server - server the booking request came from
 //      user - user the booking is for
 //      time - date object for the date/time the user is booking into
-export const CreateBooking = async (server: string, user: string, time: Date) => {
+const CreateBooking = async (server: string, user: string, time: Date) => {
 	let query = `INSERT INTO bookings (server, user, date, time) VALUES (\'${server}\', \'${user}\', \'${GetFullDateFromDate(time)}\', \'${Get24HourTimeFromDate(time)}\')`;
     await Execute(query);
 }

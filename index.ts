@@ -1,8 +1,9 @@
+import { Client, ClientOptions } from "discord.js";
+import env from './Env/env.json';
 import { Play } from "./Commands/Play";
 import { Patchnotes } from "./Commands/Patchnotes";
 import { Help } from "./Commands/Help";
-import { Client, ClientOptions } from "discord.js";
-import env from './Env/env.json';
+import { Busy } from "./Commands/Busy";
 
 // Init Discord Bot
 const options: ClientOptions = {
@@ -31,6 +32,7 @@ bot.on('message', async message => {
             break;
         }
         case cmd.includes('busy'): {
+            Busy(message, cmd);
             break;
         }
         case cmd.includes('booked'): {
@@ -52,4 +54,6 @@ bot.on('message', async message => {
             break;
         }
     };
+
+    message.delete();
 });

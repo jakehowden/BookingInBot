@@ -1,4 +1,6 @@
-// Function which returns a valid Date() object from the time given in the args
+// Returns a valid Date() object from the time given in the args
+// Params:
+//      args - the arguments the user provided in the message
 export const GetDateFromArgs = (args: string): Date => {
 
     let today = new Date();
@@ -18,6 +20,9 @@ export const GetDateFromArgs = (args: string): Date => {
     return today;
 }
 
+// Generates a string in the format yyyy/mm/dd from the Date provided.
+// Params:
+//      args - the arguments the user provided in the message
 export const GetFullDateFromDate = (date: Date): string => {
     let month = date.getUTCMonth() + 1; //months from 1-12
     let day = date.getUTCDate();
@@ -26,6 +31,9 @@ export const GetFullDateFromDate = (date: Date): string => {
     return year + "/" + month + "/" + day;
 }
 
+// Generates a string in the format hh/mm from the Date provided.
+// Params:
+//      args - the arguments the user provided in the message
 export const Get24HourTimeFromDate = (date: Date): string => {
     return date.getHours() + ':' + date.getMinutes()
 }

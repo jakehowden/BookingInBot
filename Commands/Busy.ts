@@ -3,6 +3,10 @@ import { Execute } from "../Database/db";
 import { Get24HourTimeFromDate, GetDateFromArgs, GetFullDateFromDate } from "../Helpers/DateManipulation";
 import { ArgsHaveTime } from "../Helpers/StringManipulation";
 
+// Handles the Book command
+// Params:
+//      message - the message being handled
+//      args - the arguments the user provided in the message
 export const Busy = async (message: Message, args: string) => {
     // Resolve booking details
     let server:string = message.guild!.id!;

@@ -1,9 +1,11 @@
 import { Client, ClientOptions } from "discord.js";
 import env from './Env/env.json';
 import { Play } from "./Commands/Play";
-import { Patchnotes } from "./Commands/Patchnotes";
 import { Help } from "./Commands/Help";
 import { Busy } from "./Commands/Busy";
+import { PatchNotes } from "./Commands/PatchNotes";
+import { Ask } from "./Commands/Ask";
+import { Booked } from "./Commands/Booked";
 
 // Init Discord Bot
 const options: ClientOptions = {
@@ -20,36 +22,38 @@ bot.on('ready', () => {
 
 bot.on('message', async message => {
 
-    let cmd: string = message.content.replace('!', '');
+    let args: string = message.content.replace('!', '');
     
     switch(true)
     {
-        case cmd.includes('play'): {
-            await Play(message, cmd);
+        case args.includes('play'): {
+            await Play(message, args);
             break;
         }
-        case cmd.includes('same'): {
+        case args.includes('same'): {
             break;
         }
-        case cmd.includes('busy'): {
-            Busy(message, cmd);
+        case args.includes('busy'): {
+            Busy(message, args);
             break;
         }
-        case cmd.includes('booked'): {
+        case args.includes('booked'): {
+            Booked(message, args);
             break;
         }
-        case cmd.includes('ask'): {
+        case args.includes('ask'): {
+            Ask(message, args);
             break;
         }
-        case cmd.includes('help'): {
+        case args.includes('help'): {
             Help(message);
             break;
         }
-        case cmd.includes('patchnotes'): {
-            Patchnotes(message, env.version);
+        case args.includes('patchnotes'): {
+            PatchNotes(message, env.version);
             break;
         }
-        case cmd.includes('version'): {
+        case args.includes('version'): {
             message.channel.send(env.version);
             break;
         }

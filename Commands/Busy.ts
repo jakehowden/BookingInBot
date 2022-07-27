@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { Execute } from "../Database/db";
-import { Get24HourTimeFromDate, GetDateFromArgs, GetFullDateFromDate } from "../Helpers/DateManipulation";
+import { RemoveAllBookingsForDay, RemoveBooking } from "../Database/db";
+import { GetDateFromArgs } from "../Helpers/DateManipulation";
 import { ArgsHaveTime } from "../Helpers/StringManipulation";
 
 // Handles the Book command
@@ -19,26 +19,7 @@ export const Busy = async (message: Message, args: string) => {
         message.channel.send(user + ' was removed from their ' + args + ' booking');
     }
     else {
-        await RemoveAllBookings(server, user);
+        await RemoveAllBookingsForDay(server, user, new Date());
         message.channel.send(user + ' was removed from all bookings');
     }
-}
-
-// Removes a specific booking for a user for the current day from the database
-// Params:
-//      server - server the booking request came from
-//      user - user the booking is for
-//      time - the time of the booking to remove
-const RemoveBooking = async (server: string, user: string, time: Date) => {
-    let query = `DELETE FROM bookings WHERE server_id=\'${server}\' AND user_id=\'${user}\' AND date_booked=\'${GetFullDateFromDate(time)}\' AND time_booked=\'${Get24HourTimeFromDate(time)}\')`;
-    await Execute(query);
-}
-
-// Removes all bookings for a user for the current day from the database
-// Params:
-//      server - server the booking request came from
-//      user - user the booking is for
-const RemoveAllBookings = async (server: string, user: string) => {
-    let query = `DELETE FROM bookings WHERE server_id=\'${server}\' AND user_id=\'${user}\' AND date_booked=\'${GetFullDateFromDate(new Date())}\'`;
-    await Execute(query);
 }

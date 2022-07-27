@@ -1,9 +1,14 @@
 import { Message } from 'discord.js';
-import { GetDateFromArgs, GetFullDateFromDate, Get24HourTimeFromDate } from '../Helpers/DateManipulation';
-import { Execute } from '../Database/db';
+import { GetDateFromArgs, Get24HourTimeFromDate } from '../Helpers/DateManipulation';
+import { CreateBooking } from '../Database/db';
+import { ArgsHaveTime } from '../Helpers/StringManipulation';
 
+// Handles the Play command
+// Params:
+//      message - the message being handled
+//      args - the arguments the user provided in the message
 export const Play = async (message: Message, args: string) => {
-    if (args === 'play' || args === 'play ') // no time
+    if (!ArgsHaveTime(args)) // no time
             return;
     
     // Resolve booking details
@@ -14,14 +19,4 @@ export const Play = async (message: Message, args: string) => {
     // Create booking and confirm in channel chat
     await CreateBooking(server, user, time);
     message.channel.send(user + ' booked in for ' + Get24HourTimeFromDate(time));
-}
-
-// A function to add a new booking to the database
-// Params:
-//      server - server the booking request came from
-//      user - user the booking is for
-//      time - date object for the date/time the user is booking into
-const CreateBooking = async (server: string, user: string, time: Date) => {
-	let query = `INSERT INTO bookings (server, user, date, time) VALUES (\'${server}\', \'${user}\', \'${GetFullDateFromDate(time)}\', \'${Get24HourTimeFromDate(time)}\')`;
-    await Execute(query);
 }

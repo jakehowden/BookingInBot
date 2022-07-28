@@ -21,7 +21,8 @@ const getConnection = async (): Promise<Connection> => {
 
 // Gets todays bookings for the given server
 // Params:
-//      server - server the booking request came from
+//      server - server the bookings are for
+//      date - date of the bookings to get
 export const GetAllBookingsForDay = async (server: string, date: Date): Promise<Booking[]> => {
     if(!conn) await getConnection();
 
@@ -34,7 +35,7 @@ export const GetAllBookingsForDay = async (server: string, date: Date): Promise<
     catch(error)
     {
         console.log(`An exception occurred while getting bookings. Server: \'${server}\', Error: \'${error}\'`)
-        throw 'Sorry, bookings can not be retrieved at this time.';
+        throw error;
     }
     finally
     {
@@ -44,6 +45,32 @@ export const GetAllBookingsForDay = async (server: string, date: Date): Promise<
     return bookings;
 }
 
+// Gets todays bookings for the given server
+// Params:
+//      server - server the bookings are for
+export const GetMostRecentBooking = async (server: string): Promise<Booking[]> => {
+    if(!conn) await getConnection();
+
+	let query = `SELECT user_id, date_booked, time_booked FROM bookings WHERE server_id=\'${server}\' AND created=(SELECT MAX(created) FROM bookings WHERE server_id=\'${server}\')`;
+    let bookings: Booking[];
+    try
+    {
+        [bookings] = await conn.query<Booking[]>(query);
+    }
+    catch(error)
+    {
+        console.log(`An exception occurred while getting bookings. Server: \'${server}\', Error: \'${error}\'`)
+        throw error;
+    }
+    finally
+    {
+        await closeConnection();
+    }
+
+    return bookings;
+}
+
+
 // Creates a booking for the given server and user at the given time
 // Params:
 //      server - server the booking request came from
@@ -52,7 +79,7 @@ export const GetAllBookingsForDay = async (server: string, date: Date): Promise<
 export const CreateBooking = async (server: string, user: string, time: Date) => {
     if(!conn) await getConnection();
 
-	let query = `INSERT INTO bookings (server, user, date, time) VALUES (\'${server}\', \'${user}\', \'${GetFullDateFromDate(time)}\', \'${Get24HourTimeFromDate(time)}\')`;
+	let query = `INSERT INTO bookings (server_id, user_id, date_booked, time_booked) VALUES (\'${server}\', \'${user}\', \'${GetFullDateFromDate(time)}\', \'${Get24HourTimeFromDate(time)}\')`;
     try
     {
         await conn.query(query);
@@ -60,7 +87,32 @@ export const CreateBooking = async (server: string, user: string, time: Date) =>
     catch(error)
     {
         console.log(`An exception occurred while deleting a booking. Server: \'${server}\', User: \'${user}\', Error: \'${error}\'`)
-        throw 'Sorry, the booking could not be created at this time.';
+        throw error;
+    }
+    finally
+    {
+        await closeConnection();
+    }
+}
+
+// Creates a booking for the given server and user at the given time
+// Params:
+//      server - server the booking request came from
+//      user - user the booking is for
+//      time - time for the booking
+//      date - date for the booking
+export const CreateSpecificBooking = async (server: string, user: string, date: string, time: string) => {
+    if(!conn) await getConnection();
+
+	let query = `INSERT INTO bookings (server_id, user_id, date_booked, time_booked) VALUES (\'${server}\', \'${user}\', \'${date}\', \'${time}\')`;
+    try
+    {
+        await conn.query(query);
+    }
+    catch(error)
+    {
+        console.log(`An exception occurred while deleting a booking. Server: \'${server}\', User: \'${user}\', Error: \'${error}\'`)
+        throw error;
     }
     finally
     {
@@ -70,7 +122,7 @@ export const CreateBooking = async (server: string, user: string, time: Date) =>
 
 // Removes a specific booking for a user for the current day from the database
 // Params:
-//      server - server the booking request came from
+//      server - server the request came from
 //      user - user the booking is for
 //      time - the date and time of the booking to remove
 export const RemoveBooking = async (server: string, user: string, date: Date) => {
@@ -84,7 +136,7 @@ export const RemoveBooking = async (server: string, user: string, date: Date) =>
     catch(error)
     {
         console.log(`An exception occurred while deleting a booking. Server: \'${server}\', User: \'${user}\', Error: \'${error}\'`)
-        throw 'Sorry, the booking can not be removed at this time.';
+        throw error;
     }
     finally
     {
@@ -94,7 +146,7 @@ export const RemoveBooking = async (server: string, user: string, date: Date) =>
 
 // Removes all bookings for a user for the current day from the database
 // Params:
-//      server - server the booking request came from
+//      server - server the request came from
 //      user - user the booking is for
 //      date - date to remove the bookings from
 export const RemoveAllBookingsForDay = async (server: string, user: string, date: Date) => {
@@ -108,7 +160,7 @@ export const RemoveAllBookingsForDay = async (server: string, user: string, date
     catch(error)
     {
         console.log(`An exception occurred while deleting all bookings. Server: \'${server}\', User: \'${user}\', Error: \'${error}\'`)
-        throw 'Sorry, the bookings can not be removed at this time.';
+        throw error;
     }
     finally
     {

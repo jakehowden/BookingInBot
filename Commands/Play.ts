@@ -17,6 +17,13 @@ export const Play = async (message: Message, args: string) => {
     let user = message.member!.user.username + '#' + message.member!.user.discriminator;
     
     // Create booking and confirm in channel chat
-    await CreateBooking(server, user, time);
-    message.channel.send(user + ' booked in for ' + Get24HourTimeFromDate(time));
+    try
+    {
+        await CreateBooking(server, user, time);
+        message.channel.send(user + ' booked in for ' + Get24HourTimeFromDate(time));
+    }
+    catch
+    {
+        message.channel.send('Sorry, the booking could not be created at this time.');
+    }
 }

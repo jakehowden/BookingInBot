@@ -1,4 +1,4 @@
-import { Client, ClientOptions } from "discord.js";
+import { Client } from "discord.js";
 import env from './Env/env.json';
 import { Play } from "./Commands/Play";
 import { Help } from "./Commands/Help";
@@ -9,7 +9,7 @@ import { Booked } from "./Commands/Booked";
 import { Same } from "./Commands/Same";
 
 // Init Discord Bot
-const options: ClientOptions = {
+const options = {
     intents: []
 }
 const bot = new Client(options);
@@ -23,7 +23,7 @@ bot.on('ready', () => {
 
 bot.on('message', async message => {
 
-    let args: string = message.content.replace('!', '');
+    let args = message.content.replace('!', '');
     
     switch(true)
     {

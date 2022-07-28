@@ -6,6 +6,7 @@ import { Busy } from "./Commands/Busy";
 import { PatchNotes } from "./Commands/PatchNotes";
 import { Ask } from "./Commands/Ask";
 import { Booked } from "./Commands/Booked";
+import { Same } from "./Commands/Same";
 
 // Init Discord Bot
 const options: ClientOptions = {
@@ -31,6 +32,7 @@ bot.on('message', async message => {
             break;
         }
         case args.includes('same'): {
+            await Same(message)
             break;
         }
         case args.includes('busy'): {

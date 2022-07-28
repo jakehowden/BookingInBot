@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
 import { CreateSpecificBooking, GetMostRecentBooking } from '../Database/db';
-import { ArgsHaveTime } from '../Helpers/StringManipulation';
 import { Booking } from '../Models/Booking';
 
 // Handles the Play command

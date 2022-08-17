@@ -1,7 +1,7 @@
-import { db_host, db_port, db_user, db_password, db_name } from '../Env/db.json';
 import { createConnection, Connection } from 'mysql2/promise';
 import { Booking } from '../Models/Booking';
 import { Get24HourTimeFromDate, GetFullDateFromDate } from '../Helpers/DateManipulation';
+import config from "./../config";
 
 let conn: Connection;
 
@@ -9,11 +9,11 @@ const getConnection = async (): Promise<Connection> => {
     if (conn) return conn;
 
     conn = await createConnection({
-        host: db_host,
-        port: parseInt(db_port),
-        user: db_user,
-        password: db_password,
-        database: db_name
+        host: config.DB_HOST,
+        port: parseInt(config.DB_PORT),
+        user: config.DB_USER,
+        password: config.DB_PASSWORD,
+        database: config.DB_NAME
     });
 
     return conn;

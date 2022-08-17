@@ -1,5 +1,4 @@
 import { Client } from "discord.js";
-import env from './Env/env.json';
 import { Play } from "./Commands/Play";
 import { Help } from "./Commands/Help";
 import { Busy } from "./Commands/Busy";
@@ -7,21 +6,23 @@ import { PatchNotes } from "./Commands/PatchNotes";
 import { Ask } from "./Commands/Ask";
 import { Booked } from "./Commands/Booked";
 import { Same } from "./Commands/Same";
+import config from "./config";
 
 // Init Discord Bot
-const options = {
-    intents: []
-}
-const bot = new Client(options);
+const bot = new Client({
+    intents: ["Guilds", "GuildMessages", "DirectMessages"]
+});
 
 // Login to Discord
-bot.login(env.discord_token);
+bot.login(config.DISCORD_TOKEN);
 
 bot.on('ready', () => {
     console.log('Connected - ready for commands');
 });
 
 bot.on('message', async message => {
+
+    console.log(message.content);
 
     let args = message.content.replace('!', '');
     
@@ -52,11 +53,11 @@ bot.on('message', async message => {
             break;
         }
         case args.includes('patchnotes'): {
-            PatchNotes(message, env.version);
+            PatchNotes(message, config.VERSION);
             break;
         }
         case args.includes('version'): {
-            message.channel.send(env.version);
+            message.channel.send(config.VERSION);
             break;
         }
     };

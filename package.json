@@ -1,10 +1,32 @@
 {
+  "name": "bookinginbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakehowden/BookingInBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jakehowden/BookingInBot/issues"
+  },
+  "homepage": "https://github.com/jakehowden/BookingInBot#readme",
   "devDependencies": {
-    "@types/mysql": "^2.15.21",
+    "concurrently": "^7.3.0",
     "mysql2": "^2.3.3",
+    "nodemon": "^2.0.19",
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "discord.js": "^14.0.3"
+    "discord.js": "^14.2.0",
+    "dotenv": "^16.0.1"
   }
 }

@@ -1,3 +1,7 @@
 sql/*
 node_modules/
 nbproject/
+
+.env
+
+build

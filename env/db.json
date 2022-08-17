@@ -1,7 +1,7 @@
 {
-    "db_host": "dbh.fr01.oxide.systems",
-    "db_port": "12643",
-    "db_user": "u115_elp9tAAoi7",
-    "db_password": "+0ZaiOi7!M74VWe+Hi=NXHhJ",
-    "db_name": "s115_bib"
+    "db_host": "eu-cdbr-west-03.cleardb.net",
+    "db_port": "3306",
+    "db_user": "b2e1fd4133dc05",
+    "db_password": "9b0cdb7f",
+    "db_name": "heroku_387b46ef8e78fac"
 }

@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 import { Play } from "./Commands/Play";
 import { Help } from "./Commands/Help";
 import { Busy } from "./Commands/Busy";
@@ -10,7 +10,7 @@ import config from "./config";
 
 // Init Discord Bot
 const bot = new Client({
-    intents: ["Guilds", "GuildMessages", "DirectMessages"]
+    intents: [GatewayIntentBits.Guilds]
 });
 
 // Login to Discord
@@ -20,47 +20,48 @@ bot.on('ready', () => {
     console.log('Connected - ready for commands');
 });
 
-bot.on('message', async message => {
+bot.on('interactionCreate', async interaction => {
+    if(!interaction.isCommand()) {
+        return;
+    }
 
-    console.log(message.content);
+    if(interaction.commandName == 'version') {
+        await interaction.reply(config.VERSION + interaction.options.get('time'));
+    }
 
-    let args = message.content.replace('!', '');
-    
-    switch(true)
-    {
-        case args.includes('play'): {
-            await Play(message, args);
-            break;
-        }
-        case args.includes('same'): {
-            await Same(message)
-            break;
-        }
-        case args.includes('busy'): {
-            Busy(message, args);
-            break;
-        }
-        case args.includes('booked'): {
-            Booked(message, args);
-            break;
-        }
-        case args.includes('ask'): {
-            Ask(message, args);
-            break;
-        }
-        case args.includes('help'): {
-            Help(message);
-            break;
-        }
-        case args.includes('patchnotes'): {
-            PatchNotes(message, config.VERSION);
-            break;
-        }
-        case args.includes('version'): {
-            message.channel.send(config.VERSION);
-            break;
-        }
-    };
-
-    message.delete();
+    // switch(message.commandName)
+    // {
+    //     case 'play': {
+    //         await Play(message);
+    //         break;
+    //     }
+    //     case args.includes('same'): {
+    //         await Same(message)
+    //         break;
+    //     }
+    //     case args.includes('busy'): {
+    //         Busy(message, args);
+    //         break;
+    //     }
+    //     case args.includes('booked'): {
+    //         Booked(message, args);
+    //         break;
+    //     }
+    //     case args.includes('ask'): {
+    //         Ask(message, args);
+    //         break;
+    //     }
+    //     case args.includes('help'): {
+    //         Help(message);
+    //         break;
+    //     }
+    //     case args.includes('patchnotes'): {
+    //         PatchNotes(message, config.VERSION);
+    //         break;
+    //     }
+    //     case args.includes('version'): {
+    //         message.channel.send(config.VERSION);
+    //         break;
+    //     }
+    // };
 });

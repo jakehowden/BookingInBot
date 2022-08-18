@@ -1,6 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
 import { Play } from "./Commands/Play";
-import { Help } from "./Commands/Help";
 import { Busy } from "./Commands/Busy";
 import { PatchNotes } from "./Commands/PatchNotes";
 import { Ask } from "./Commands/Ask";

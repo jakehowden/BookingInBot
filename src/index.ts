@@ -47,10 +47,6 @@ bot.on('interactionCreate', async interaction => {
             Ask(interaction);
             break;
         }
-        case 'help': {
-            Help(interaction);
-            break;
-        }
         case 'patchnotes': {
             await PatchNotes(interaction);
             break;

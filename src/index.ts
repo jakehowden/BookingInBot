@@ -21,47 +21,43 @@ bot.on('ready', () => {
 });
 
 bot.on('interactionCreate', async interaction => {
-    if(!interaction.isCommand()) {
+    if(!interaction.isChatInputCommand()) {
         return;
     }
 
-    if(interaction.commandName == 'version') {
-        await interaction.reply(config.VERSION + interaction.options.get('time'));
-    }
-
-    // switch(message.commandName)
-    // {
-    //     case 'play': {
-    //         await Play(message);
-    //         break;
-    //     }
-    //     case args.includes('same'): {
-    //         await Same(message)
-    //         break;
-    //     }
-    //     case args.includes('busy'): {
-    //         Busy(message, args);
-    //         break;
-    //     }
-    //     case args.includes('booked'): {
-    //         Booked(message, args);
-    //         break;
-    //     }
-    //     case args.includes('ask'): {
-    //         Ask(message, args);
-    //         break;
-    //     }
-    //     case args.includes('help'): {
-    //         Help(message);
-    //         break;
-    //     }
-    //     case args.includes('patchnotes'): {
-    //         PatchNotes(message, config.VERSION);
-    //         break;
-    //     }
-    //     case args.includes('version'): {
-    //         message.channel.send(config.VERSION);
-    //         break;
-    //     }
-    // };
+    switch(interaction.commandName)
+    {
+        case 'play': {
+            await Play(interaction);
+            break;
+        }
+        case 'same': {
+            await Same(interaction)
+            break;
+        }
+        case 'busy': {
+            Busy(interaction);
+            break;
+        }
+        case 'booked': {
+            Booked(interaction);
+            break;
+        }
+        case 'ask': {
+            Ask(interaction);
+            break;
+        }
+        case 'help': {
+            Help(interaction);
+            break;
+        }
+        case 'patchnotes': {
+            await PatchNotes(interaction);
+            break;
+        }
+        case 'version': {
+            await interaction.reply(config.VERSION);
+            break;
+        }
+    };
 });

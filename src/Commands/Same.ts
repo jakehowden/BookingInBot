@@ -1,37 +1,40 @@
-import { Message } from 'discord.js';
-import { CreateSpecificBooking, GetMostRecentBooking } from '../Database/db';
-import { Booking } from '../Models/Booking';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { Busy } from './Busy';
+import { Play } from './Play';
+import InteractionCache from '../Models/InteractionCache';
 
 // Handles the Play command
 // Params:
 //      message - the message being handled
-export const Same = async (message: Message) => {
-    // Resolve booking details
-    let server:string = message.guild!.id!;
-    let user = message.member!.user.username + '#' + message.member!.user.discriminator;
-    
-    // Get most recent booking
-    let latestBooking: Booking[];
-    try
+export const Same = async (interaction: ChatInputCommandInteraction) => {
+    // Resolve command details
+    let server:string = interaction.guild!.id!;
+    let lastInteraction: ChatInputCommandInteraction | undefined = InteractionCache.Get(server);
+
+    if(lastInteraction === undefined)
     {
-        latestBooking = await GetMostRecentBooking(server);
-    }
-    catch
-    {
-        message.channel.send('Sorry, the booking could not be created at this time.');
+        await interaction.editReply("There are no previous play or busy commands.");
         return;
     }
 
-    // Create booking and confirm in channel chat
-    let date: string = latestBooking[0].date_booked;
-    let time: string = latestBooking[0].time_booked;
-    try
+    // Setup the current interaction to behave like the last interaction
+    interaction.commandName = lastInteraction.commandName;
+    interaction.options = lastInteraction.options;
+
+    switch(interaction.commandName)
     {
-        await CreateSpecificBooking(server, user, date, time);
-        message.channel.send(user + ' booked in for ' + time);
-    }
-    catch
-    {
-        message.channel.send('Sorry, the booking could not be created at this time.');
+        case 'play': {
+            await Play(interaction);
+            return;
+        }
+        case 'busy': {
+            await Busy(interaction);
+            return;
+        }
+        default: {
+            console.log("The last interaction did not have a valid command name, " + lastInteraction.commandName);
+            await interaction.editReply("Sorry, I can't do that right now 😞");
+            return;
+        }
     }
 }

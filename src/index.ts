@@ -1,10 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
-import { Play } from "./Commands/Play";
-import { Busy } from "./Commands/Busy";
-import { PatchNotes } from "./Commands/PatchNotes";
-import { Ask } from "./Commands/Ask";
-import { Booked } from "./Commands/Booked";
-import { Same } from "./Commands/Same";
+import { HandleCommand } from "./Commands/handle-commands";
 import config from "./config";
 
 // Init Discord Bot
@@ -24,35 +19,19 @@ bot.on('interactionCreate', async interaction => {
         return;
     }
 
-    switch(interaction.commandName)
-    {
-        case 'play': {
-            await Play(interaction);
-            break;
+    await interaction.deferReply();
+
+    let counter: number = 0;
+    while(counter != 3) {
+        console.log(counter);
+        
+        try {
+            await HandleCommand(interaction);
+            return;
+        } catch {
+            counter++;
         }
-        case 'same': {
-            await Same(interaction)
-            break;
-        }
-        case 'busy': {
-            Busy(interaction);
-            break;
-        }
-        case 'booked': {
-            Booked(interaction);
-            break;
-        }
-        case 'ask': {
-            Ask(interaction);
-            break;
-        }
-        case 'patchnotes': {
-            await PatchNotes(interaction);
-            break;
-        }
-        case 'version': {
-            await interaction.reply(config.VERSION);
-            break;
-        }
-    };
+    }
+
+    await interaction.editReply("Sorry, I couldn't process that command right now.");
 });

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { GetAllBookingsForDay } from '../Database/db';
 import { Booking } from '../Models/Booking';
 
@@ -18,20 +18,27 @@ export const Booked = async (interaction: ChatInputCommandInteraction) => {
     {
         let bookings: Booking[] = await GetAllBookingsForDay(server, new Date());
 
+        if(bookings.length == 0)
+        {
+            await interaction.editReply('There are no bookings for today.');
+            return;
+        }
+
         for (let i = 0; i < bookings.length; i++) {
             if(currentTime != bookings[i].time_booked)
             {
                 currentTime = bookings[i].time_booked;
                 msg += '\n' + currentTime + ' Bookings: '
             }
-        
-            msg += bookings[i].user_id + ' ';
+            
+            let username = bookings[i].user_id.split('#')[0]
+            msg += username + ' ';
         }
 
-        interaction.reply(msg);
+        await interaction.editReply(msg);
     }
     catch
     {
-        interaction.reply('Sorry, bookings can not be retrieved at this time.');
+        await interaction.editReply('Sorry, bookings can not be retrieved at this time.');
     }
 }

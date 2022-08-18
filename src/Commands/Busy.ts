@@ -9,18 +9,20 @@ import { GetDateFromArgs } from "../Helpers/DateManipulation";
 export const Busy = async (interaction: ChatInputCommandInteraction) => {
     // Resolve server and user details
     let server:string = interaction.guild!.id!;
-    let user = interaction.member!.user.username + '#' + interaction.member!.user.discriminator;
+    let username = interaction.member!.user.username;
+    let user = username + '#' + interaction.member!.user.discriminator;
     let option: string | null = interaction.options.getString('time');
 
     if(option == null) {
         try
         {
             await RemoveAllBookingsForDay(server, user, new Date());
-            interaction.reply(user + ' was removed from all bookings');
+            await interaction.editReply(username + ' was removed from all bookings');
         }
-        catch
+        catch (error)
         {
-            interaction.reply('Sorry, the bookings can not be removed at this time.');
+            console.log(error);
+            await interaction.editReply('Sorry, the bookings can not be removed at this time.');
         }
     }
     else {
@@ -28,11 +30,12 @@ export const Busy = async (interaction: ChatInputCommandInteraction) => {
         try
         {
             await RemoveBooking(server, user, time);
-            interaction.reply(user + ' was removed from their ' + option + ' booking');
+            await interaction.editReply(username + ' was removed from their ' + option + ' booking');
         }
-        catch
+        catch (error)
         {
-            interaction.reply('Sorry, the booking can not be removed at this time.');
+            console.log(error);
+            await interaction.editReply('Sorry, the booking can not be removed at this time.');
         }
     }
 }
